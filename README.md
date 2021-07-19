@@ -62,6 +62,7 @@ Create a new Logstash Transport
 | `trailingLineFeed` | boolean | Enable appending end of line character to UDP output |  | `false` |  | ✔️ |
 | `trailingLineFeedChar` | string | The type of end of line character(s) to append to UDP output | Any | `os.EOL` |  | ✔️ |
 | `formatted` | boolean | Enable/Disable delivery of standard pre-formatted JSON payloads. See [Message Payloads](#payloads) for more info. |  | `true` | ✔️ | ✔️ |
+| `hasNewline` | boolean | Enable / disable added newline for message |  | `false` | ✔️ | ✔️ |
 
 ## [Message Payloads](#payloads)
 <a name="payloads"></a>

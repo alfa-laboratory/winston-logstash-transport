@@ -31,7 +31,8 @@ class LogstashTransport extends Transport {
       trailingLineFeed: false,
       trailingLineFeedChar: os.EOL,
       level: 'info',
-      formatted: true
+      formatted: true,
+      hasNewline: false,
     };
 
     options = options || {};
@@ -46,8 +47,12 @@ class LogstashTransport extends Transport {
     });
     this.name = 'logstashTransport';
 
-    if (this.mode === 'tcp') { this.mode = 'tcp4'; }
-    if (this.mode === 'udp') { this.mode = 'udp4'; }
+    if (this.mode === 'tcp') {
+      this.mode = 'tcp4';
+    }
+    if (this.mode === 'udp') {
+      this.mode = 'udp4';
+    }
     if (this.mode.substr(3, 4) === '6' && this.host === '127.0.0.1') {
       this.host = '::0';
     }
@@ -96,18 +101,22 @@ class LogstashTransport extends Transport {
           label: this.label,
           application: this.applicationName,
           serverName: this.localhost,
-          pid: this.pid
+          pid: this.pid,
         });
+      }
+
+      if (this.hasNewline) {
+        output += '\n';
       }
 
       if (this.connectionState !== 'CONNECTED') {
         this.logQueue.push({
           message: output,
-          callback: (() => {
+          callback: () => {
             this.emit('logged', info);
             callback();
             // callback(err, !err);
-          })
+          },
         });
       } else {
         setImmediate(() => {
@@ -163,14 +172,14 @@ class LogstashTransport extends Transport {
   connectTCP() {
     const options = {
       host: this.host,
-      port: this.port
+      port: this.port,
     };
 
     if (this.sslEnable) {
       options.key = this.sslKey ? fs.readFileSync(this.sslKey) : null;
       options.cert = this.sslCert ? fs.readFileSync(this.sslCert) : null;
       options.passphrase = this.sslPassPhrase || null;
-      options.rejectUnauthorized = (this.rejectUnauthorized === true);
+      options.rejectUnauthorized = this.rejectUnauthorized === true;
 
       if (this.ca) {
         options.ca = [];
@@ -199,7 +208,7 @@ class LogstashTransport extends Transport {
     this.socket.on('error', () => {
       this.connectionState = 'NOT CONNECTED';
 
-      if (this.socket && (typeof this.socket !== 'undefined')) {
+      if (this.socket && typeof this.socket !== 'undefined') {
         this.socket.destroy();
       }
       this.socket = null;
@@ -251,7 +260,7 @@ class LogstashTransport extends Transport {
     this.socket = dgram.createSocket(this.mode, { sendBufferSize: 60000 });
     this.socket.on('error', (err) => {
       // Do nothing
-      if (!(/ECONNREFUSED/).test(err.message)) {
+      if (!/ECONNREFUSED/.test(err.message)) {
         console.error(err);
         // setImmediate(() => {
         //   this.emit('error', err);
