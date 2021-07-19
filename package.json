@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OutofSyncStudios/winston-logstash-transport.git"
+    "url": "git+https://github.com/alfa-laboratory/winston-logstash-transport.git"
   },
   "publishConfig": {
     "access": "public"
@@ -33,9 +33,9 @@
   "author": "Chronosis",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/OutofSyncStudios/winston-logstash-transport/issues"
+    "url": "https://github.com/alfa-laboratory/winston-logstash-transport/issues"
   },
-  "homepage": "https://github.com/OutofSyncStudios/winston-logstash-transport#readme",
+  "homepage": "https://github.com/alfa-laboratory/winston-logstash-transport#readme",
   "devDependencies": {
     "ajv": "^7.2.3",
     "chai": "^4.3.4",
